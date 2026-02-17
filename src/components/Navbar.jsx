@@ -21,6 +21,10 @@ export default function Navbar() {
             <NavLink to="/signup" style={linkStyle}>
                 Signup
             </NavLink>
+
+            <NavLink to="/new" style={linkStyle}>
+                New
+            </NavLink>
         </nav>
     );
 }
