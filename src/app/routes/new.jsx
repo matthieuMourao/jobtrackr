@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useApplications } from "../../context/ApplicationContext.jsx";
 
 const STATUS_OPTIONS = ["APPLIED", "INTERVIEW", "REJECTED", "OFFER"];
 
 export default function New() {
+    const { addApplication } = useApplications();
+    
     const [form, setForm] = useState({
         company:"",
         role:"",
@@ -22,7 +25,7 @@ export default function New() {
     }
 
     function handleSubmit(e) {
-        e.preventDefault(),
+        e.preventDefault();
         setError("");
 
         if (!form.company.trim() || !form.role.trim()) {
@@ -39,6 +42,7 @@ export default function New() {
             createAt: new Date().toISOString(),
         };
 
+        addApplication(newAplication);
         setSubmitted(newAplication);
 
         setForm((prev) => ({
@@ -55,7 +59,7 @@ export default function New() {
             <h1>Nouvelle candidature</h1>
 
             {error && (
-                <div style={{ padding: 12, border: "1px solide", marginBottom: 12 }}>
+                <div style={{ padding: 12, border: "1px solid red", marginBottom: 12 }}>
                     {error}
                 </div>
             )}
