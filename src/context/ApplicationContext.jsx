@@ -24,8 +24,20 @@ export function ApplicationProvider({ children }) {
         setApplications((prev) => [...prev, app]);
     }
 
+    function removeApplication(id) {
+        setApplications((prev) => prev.filter((app) => app.id !== id));
+    }
+
+    function updateStatus(id, newStatus) {
+        setApplications((prev) =>
+            prev.map((app) =>
+                app.id === id ? {...app, status: newStatus } : app 
+            )
+        );
+    }
+
     return (
-        <ApplicationContext.Provider value={{ applications, addApplication }}>
+        <ApplicationContext.Provider value={{ applications, addApplication, removeApplication, updateStatus }}>
             {children}
         </ApplicationContext.Provider>
     );
