@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useApplications } from "../../context/ApplicationContext.jsx";
+import { creatApplication } from "../../services/applications.js";
 
 const STATUS_OPTIONS = ["APPLIED", "INTERVIEW", "REJECTED", "OFFER"];
 
@@ -24,7 +25,7 @@ export default function New() {
         setForm((prev) => ({ ...prev, [name]: value }));
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         setError("");
 
@@ -34,24 +35,29 @@ export default function New() {
         }
     
 
-        // on simule une "création" (plus tard ce sera Firebase)
-
         const newAplication = {
             ...form,
-            id: crypto.randomUUID(),
-            createAt: new Date().toISOString(),
         };
 
-        addApplication(newAplication);
-        setSubmitted(newAplication);
+        try {
+            const id = await creatApplication(newAplication);
 
-        setForm((prev) => ({
-            ...prev,
-            company:"",
-            role:"",
-            link:"",
-            notes:"",
-        }));
+            setSubmitted({
+                ...newAplication,
+                id,
+            });
+
+            setForm((prev) => ({
+                ...prev,
+                company: "",
+                role: "",
+                link: "",
+                notes: "",
+            }));
+        } catch (err) {
+          setError("Erreur lors de l'enregistrement dans Firestore.");
+          console.error(err);
+        }
     }
 
     return (
