@@ -12,7 +12,7 @@ export default function New() {
         role:"",
         location:"Montréal",
         status:"APPLIED",
-        applieDate:"",
+        appliedDate:"",
         link:"",
         notes:"",
     });
@@ -105,8 +105,8 @@ export default function New() {
                     Date de candidature 
                     <input
                         type="date"
-                        name="applieDate"
-                        value={form.applieDate}
+                        name="appliedDate"
+                        value={form.appliedDate}
                         onChange={handleChange}
                         style={{ display: "block", width: "100%", padding: 8, marginTop: 6 }}
                     />

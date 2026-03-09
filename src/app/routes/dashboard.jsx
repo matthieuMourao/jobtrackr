@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { getApplications } from "../../services/applications.js";
+import { getApplications, deleteApplication} from "../../services/applications.js";
 
 const STATUS_OPTIONS = ["ALL", "APPLIED", "INTERVIEW", "REJECTED", "OFFER" ];
 const SORT_OPTIONS = ["CREATED_DESC", "CREATED_ASC", "COMPANY_ASC"];
@@ -23,6 +23,15 @@ export default function Dashboard() {
 
         fetchApplications();
     }, []);
+
+    async function handleDelete(id) {
+        try {
+            await deleteApplication (id);
+            setApplications((prev) => prev.filter((app) => app.id !== id));
+        } catch (error) {
+            console.error("Erreur lors de la suppréssion : ", error);
+        }
+    }
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -129,7 +138,7 @@ export default function Dashboard() {
                                     </select>
 
                                     <button
-                                        disabled
+                                        onClick={() => handleDelete(app.id)}
                                         style={{padding: "6px 10px", cursor: "pointer" }}
                                     >
                                         Supprimer
