@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useApplications } from "../../context/ApplicationContext.jsx";
+import { useNavigate } from "react-router-dom";
 import { creatApplication } from "../../services/applications.js";
 
 const STATUS_OPTIONS = ["APPLIED", "INTERVIEW", "REJECTED", "OFFER"];
 
 export default function New() {
-    const { addApplication } = useApplications();
+    const navigate = useNavigate();
     
     const [form, setForm] = useState({
         company:"",
@@ -17,7 +17,6 @@ export default function New() {
         notes:"",
     });
 
-    const [submitted,setSubmitted] = useState(null);
     const [error,setError] = useState("");
 
     function handleChange(e) {
@@ -33,30 +32,13 @@ export default function New() {
             setError("company et Role sont obligatoires.");
             return;
         }
-    
-
-        const newAplication = {
-            ...form,
-        };
 
         try {
-            const id = await creatApplication(newAplication);
-
-            setSubmitted({
-                ...newAplication,
-                id,
-            });
-
-            setForm((prev) => ({
-                ...prev,
-                company: "",
-                role: "",
-                link: "",
-                notes: "",
-            }));
+            await creatApplication(form);
+            navigate("/");
         } catch (err) {
-          setError("Erreur lors de l'enregistrement dans Firestore.");
-          console.error(err);
+            setError("Erreur lors de l'enregistrement dans Firestore.");
+            console.error(err);
         }
     }
 
@@ -156,15 +138,6 @@ export default function New() {
                     Ajouter
                 </button>
             </form>
-
-            {submitted && (
-                <div style={{ marginTop: 24 }}>
-                    <h2>Dernière candidature ajoutée (simulation)</h2>
-                    <pre style={{ padding: 12, border: "1px solid", msOverflowX: "auto" }}>
-                        {JSON.stringify(submitted, null, 2)}
-                    </pre>
-                </div>
-            )}
         </div>
     );
 }

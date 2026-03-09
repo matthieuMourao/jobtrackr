@@ -1,15 +1,28 @@
-import { useApplications } from "../../context/ApplicationContext.jsx";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { getApplications } from "../../services/applications.js";
 
 const STATUS_OPTIONS = ["ALL", "APPLIED", "INTERVIEW", "REJECTED", "OFFER" ];
 const SORT_OPTIONS = ["CREATED_DESC", "CREATED_ASC", "COMPANY_ASC"];
 
 export default function Dashboard() {
-    const { applications, removeApplication, updateStatus } = useApplications();
+    const [applications,setApplications] = useState([]);
 
     const [query, setQuery] = useState("");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [sortBy, setSortBy] = useState("CREATED_DESC");
+
+    useEffect(() => {
+        async function fetchApplications() {
+            try {
+                const data = await getApplications();
+                setApplications(data);
+            } catch (error) {
+              console.error("Erreur lors du chargement des candidatures : ", error);
+            }
+        }
+
+        fetchApplications();
+    }, []);
 
     const filtered = useMemo(() => {
         const q = query.trim().toLowerCase();
@@ -98,14 +111,14 @@ export default function Dashboard() {
                                     <div style={{fontWeight: 700 }}>{app.company}</div>
                                     <div style={{opacity: 0.85 }}>{app.role}</div>
                                     <div style={{fontSize: 12, opacity: 0.7 }}>
-                                        {app.location} • {app.applieDate || "Date inconnue"}                    
+                                        {app.location} • {app.appliedDate || "Date inconnue"}                    
                                     </div>
                                 </div>
 
                                 <div style={{display: "flex", gap: 8, alignItems: "center" }}>
                                     <select
                                         value={app.status}
-                                        onChange={(e) => updateStatus(app.id, e.target.value)}
+                                        disabled
                                         style={{ padding: 6 }}
                                     >
                                         {STATUS_OPTIONS.filter((s) => s !=="ALL").map((s) => (
@@ -116,7 +129,7 @@ export default function Dashboard() {
                                     </select>
 
                                     <button
-                                        onClick={() => removeApplication(app.id)}
+                                        disabled
                                         style={{padding: "6px 10px", cursor: "pointer" }}
                                     >
                                         Supprimer
