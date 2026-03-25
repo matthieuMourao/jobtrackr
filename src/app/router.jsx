@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/layout.jsx";
+import ProtectedRoute from "../components/ProtectedRoute.jsx";
 
 import Dashboard from "./routes/dashboard.jsx";
 import Login from "./routes/login.jsx";
@@ -12,10 +13,24 @@ export const router = createBrowserRouter([
     path: "/",
     element: <Layout />,
     children: [
-        {index: true, element:<Dashboard />}, //"/" => Dashboard
-        {path: "login",element:<Login />}, //"/login"
-        {path: "signup",element:<Signup />}, //"/signup"
-        {path: "new",element:<New />}, //"/new"
+        {
+            index: true,
+            element: (
+                <ProtectedRoute>
+                    <Dashboard />
+                </ProtectedRoute>
+            ),
+        },
+        {
+            path: "new",
+            element: (
+                <ProtectedRoute>
+                    <New />
+                </ProtectedRoute>
+            ),
+        },
+        { path: "login", element: <Login /> },
+        { path: "signup", element: <Signup /> },
     ],
 
  },
